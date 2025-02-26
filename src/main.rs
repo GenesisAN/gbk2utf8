@@ -4,6 +4,11 @@ use std::fs;
 use std::io::{self, Read, Write};
 use std::path::Path;
 
+// The file `built.rs` was placed there by cargo and `build.rs`
+mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
 fn is_chinese(c: char) -> bool {
     (c >= '\u{4e00}' && c <= '\u{9fa5}') || (c >= '\u{9fa6}' && c <= '\u{9fcb}')
 }
@@ -91,9 +96,18 @@ fn process_files_in_dir(dir: &Path) -> io::Result<()> {
 }
 
 fn main() {
+    // 打印版本号和编译信息
+    println!(
+        "This is version {}, built for {} by {}.[{}]\n",
+        built_info::PKG_VERSION,
+        built_info::TARGET,
+        built_info::RUSTC_VERSION,
+        built_info::BUILT_TIME_UTC
+    );
     let dir = "./"; // 设置要扫描的目录，默认为当前目录
 
     if let Err(e) = process_files_in_dir(Path::new(dir)) {
         eprintln!("处理文件夹时出错: {}", e);
     }
 }
+

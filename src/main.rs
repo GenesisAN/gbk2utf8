@@ -78,7 +78,7 @@ fn process_files_in_dir(dir: &Path) -> io::Result<()> {
             process_files_in_dir(&path)?;
         } else if path.is_file() {
             let extension = path.extension().unwrap_or_default();
-            if extension == "c" || extension == "h" {
+            if extension == "c" || extension == "h"||extension =="C"||extension == "H" {
                 // 只处理 .c 和 .h 文件
                 if let Err(e) = convert_gbk_to_utf8(&path) {
                     eprintln!("处理文件 {} 时出错: {}", path.display(), e);

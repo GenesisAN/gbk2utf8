@@ -16,7 +16,7 @@
 - `encoding`：用于支持 GBK 编码和 UTF-8 编码之间的转换。
 - `built`: 用于获取编译元数据，生成版本信息
 
-## 安装
+## 编译
 
 1. 确保你已安装 Rust 环境。可以通过 [Rust 官方网站](https://www.rust-lang.org/)下载并安装 Rust。
 2. 下载并克隆本项目

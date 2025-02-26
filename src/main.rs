@@ -1,8 +1,9 @@
 use encoding::all::GBK;
 use encoding::{DecoderTrap, Encoding};
-use std::fs;
+use std::collections::HashMap;
+use std::{env, fs};
 use std::io::{self, Read, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 // The file `built.rs` was placed there by cargo and `build.rs`
 mod built_info {
@@ -19,8 +20,19 @@ fn contains_chinese_utf8(content: &[u8]) -> bool {
         Err(_) => return false,
     };
 
-    content_str.chars().any(is_chinese)
+    // 统计中文字符数量
+    let mut chinese_count = 0;
+    for c in content_str.chars() {
+        if is_chinese(c) {
+            chinese_count += 1;
+            if chinese_count >= 4 {
+                return true;
+            }
+        }
+    }
+    false
 }
+
 
 fn count_chinese_gbk(content: &[u8]) -> usize {
     let mut count = 0;
@@ -73,20 +85,20 @@ fn convert_gbk_to_utf8(file_path: &Path) -> io::Result<()> {
     }
 }
 
-fn process_files_in_dir(dir: &Path) -> io::Result<()> {
+fn process_files_in_dir(dir: &Path, err: &mut HashMap<PathBuf, io::Error>) -> io::Result<()> {
     let paths = fs::read_dir(dir)?;
 
     for path in paths {
         let path = path?.path();
 
         if path.is_dir() {
-            process_files_in_dir(&path)?;
+            process_files_in_dir(&path, err)?;
         } else if path.is_file() {
             let extension = path.extension().unwrap_or_default();
-            if extension == "c" || extension == "h"||extension =="C"||extension == "H" {
+            if extension.eq_ignore_ascii_case("c") || extension.eq_ignore_ascii_case("h") {
                 // 只处理 .c 和 .h 文件
                 if let Err(e) = convert_gbk_to_utf8(&path) {
-                    eprintln!("处理文件 {} 时出错: {}", path.display(), e);
+                    err.insert(path.clone(), e);
                 }
             }
         }
@@ -104,10 +116,25 @@ fn main() {
         built_info::RUSTC_VERSION,
         built_info::BUILT_TIME_UTC
     );
-    let dir = "./"; // 设置要扫描的目录，默认为当前目录
 
-    if let Err(e) = process_files_in_dir(Path::new(dir)) {
-        eprintln!("处理文件夹时出错: {}", e);
+    // 从命令行参数获取目录
+    let dir = env::args().nth(1).unwrap_or_else(|| "./".to_string());
+    
+    let mut errors = HashMap::new();
+    
+    if let Err(e) = process_files_in_dir(Path::new(&dir), &mut errors) {
+        eprintln!("扫描目录失败: {}", e);
+        return;
     }
+    
+    if !errors.is_empty() {
+        println!("以下文件转换失败：");
+        for (path, err) in &errors {
+            println!("文件 {} 转换失败: {}", path.display(), err);
+        }
+    } else {
+        println!("所有文件转换成功");
+    }
+    println!("按回车键退出...");
+    let _ = io::stdin().read(&mut [0u8]).unwrap();
 }
-

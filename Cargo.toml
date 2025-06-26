@@ -8,6 +8,8 @@ build = "build.rs"
 encoding = "0.2"
 built = { version = "0.7", features = ["chrono", "semver"] }
 clap = { version = "4.5.40", features = ["derive"] }
+chardetng = "0.1.17"
+encoding_rs = "0.8.35"
 
 [build-dependencies]
 built = { version = "0.7", features = ["cargo-lock", "dependency-tree", "git2", "chrono", "semver"] }

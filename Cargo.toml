@@ -1,12 +1,13 @@
 [package]
 name = "gbk2utf8"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 build = "build.rs"
 
 [dependencies]
 encoding = "0.2"
 built = { version = "0.7", features = ["chrono", "semver"] }
+clap = { version = "4.5.40", features = ["derive"] }
 
 [build-dependencies]
 built = { version = "0.7", features = ["cargo-lock", "dependency-tree", "git2", "chrono", "semver"] }

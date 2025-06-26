@@ -82,14 +82,3 @@ gbk2utf8 -d ./src -e c,h,cpp -i
 * [`clap`](https://docs.rs/clap/)：命令行参数解析
 * [`encoding`](https://docs.rs/encoding/)：处理 GBK 解码
 * 标准库：文件处理、遍历、IO 等
-
-
-## 🙋 常见问题
-
-**Q: 会误伤 UTF-8 吗？**
-A: 不会。程序会优先判断文件是否为合法 UTF-8 编码并包含中文，若是则跳过。
-
-**Q: 支持递归子目录吗？**
-A: 支持。会自动遍历指定目录及其子目录。
-
----

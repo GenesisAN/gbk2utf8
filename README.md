@@ -30,6 +30,26 @@ cargo build --release
 ./target/release/gbk2utf8
 ```
 
+### 自动发布（GitHub Release）
+
+仓库已内置自动发布工作流：`.github/workflows/release.yml`
+
+触发方式：
+
+1. 推送版本标签（推荐）：`v*`，例如 `v0.1.3`
+2. 手动触发 workflow（`workflow_dispatch`）并填写 `tag`
+
+发布内容：
+
+* 自动构建 Linux / Windows / macOS 的 release 二进制
+* 自动创建 GitHub Release 并上传构建产物
+
+产物命名示例：
+
+* `gbk2utf8-linux-x86_64`
+* `gbk2utf8-windows-x86_64.exe`
+* `gbk2utf8-macos-x86_64`
+
 ---
 
 ## 🚀 使用示例

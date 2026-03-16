@@ -159,7 +159,7 @@ legacy/old.c
 | `-b, --backup` | 转换前备份为 `.bak` |
 | `-i, --show-info` | 显示编码猜测与置信度 |
 | `-m, --min-confidence <数值>` | GBK 置信度阈值，默认 `0.8` |
-| `--t <TLD>` | 顶级域名提示（如 `cn`、`jp`），默认 `cn` |
+| `--t <TLD>` / `--tld <TLD>` | 给 `chardetng` 的 TLD 提示（如 `cn`、`jp`），仅用于提升编码猜测准确性，默认 `cn` |
 | `--ignore-file <路径>` | 忽略规则文件（gitignore 语法），默认 `.gbk2utf8ignore` |
 | `--lang <auto\|zh\|en>` | 输出语言，默认 `auto`（自动检测） |
 
@@ -352,7 +352,7 @@ gbk2utf8 -d ./src --ignore-file .gbk2utf8ignore
 | `-b, --backup` | Create `.bak` before conversion |
 | `-i, --show-info` | Show detected encoding and confidence |
 | `-m, --min-confidence <VALUE>` | GBK confidence threshold (default: `0.8`) |
-| `--t <TLD>` | TLD hint like `cn`, `jp` (default: `cn`) |
+| `--t <TLD>` / `--tld <TLD>` | TLD hint for `chardetng` (for example `cn`, `jp`), used only to improve detection accuracy (default: `cn`) |
 | `--ignore-file <PATH>` | Ignore rules file in gitignore syntax (default: `.gbk2utf8ignore`) |
 | `--lang <auto\|zh\|en>` | Output language (default: `auto`, auto-detected) |
 

@@ -42,7 +42,12 @@ pub struct Config {
     )]
     pub min_confidence: f64,
 
-    #[arg(long = "t", help = "指定顶级域名，如 cn、jp", default_value = "cn")]
+    #[arg(
+        long = "t",
+        visible_alias = "tld",
+        help = "给 chardetng 的 TLD 提示（如 cn、jp），仅用于提升编码猜测准确性",
+        default_value = "cn"
+    )]
     pub tld: Option<String>,
 
     #[arg(

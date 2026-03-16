@@ -28,7 +28,7 @@ pub struct Config {
         short = 'e',
         long = "extensions",
         value_delimiter = ',',
-        default_value = "c,h",
+        default_value = "c,h,txt",
         help = "要处理的文件扩展名（多个用英文逗号分隔）"
     )]
     pub extensions: Vec<String>,

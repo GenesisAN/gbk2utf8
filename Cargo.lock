@@ -381,7 +381,7 @@ dependencies = [
 
 [[package]]
 name = "gbk2utf8"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "built",
  "chardetng",

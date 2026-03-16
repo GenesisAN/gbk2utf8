@@ -50,6 +50,28 @@ gbk2utf8 -e txt -b
 
 安装后可执行文件位于 `~/.cargo/bin`（Windows 通常是 `%USERPROFILE%\\.cargo\\bin`），请确保该目录在 `PATH` 中。
 
+如果你没有安装 Cargo（不做 Rust 开发也可以安装）：
+
+1. 访问 `https://rustup.rs` 并安装 Rustup（会同时安装 Cargo）
+2. 重新打开终端，确认 Cargo 可用：
+
+```bash
+cargo --version
+```
+
+3. 再执行：
+
+```bash
+cargo install gbk2utf8
+```
+
+如果你不想安装 Cargo，可以直接使用预编译 EXE：
+
+1. 打开 GitHub Releases：`https://github.com/GenesisAN/gbk2utf8/releases`
+2. 下载 Windows 产物（如 `gbk2utf8-windows-x86_64.exe`）
+3. 重命名为 `gbk2utf8.exe`（可选）
+4. 放到任意目录并执行，或把该目录加入 `PATH` 后全局调用
+
 1. crates.io 安装（推荐）
 
 ```bash
@@ -224,6 +246,28 @@ gbk2utf8 -e txt -b
 
 Binary location is usually `~/.cargo/bin` (Windows: `%USERPROFILE%\\.cargo\\bin`).
 Make sure it is in your `PATH`.
+
+If Cargo is not installed (you can do this without writing Rust code):
+
+1. Install Rustup from `https://rustup.rs` (it also installs Cargo)
+2. Reopen your terminal and verify:
+
+```bash
+cargo --version
+```
+
+3. Then install this tool:
+
+```bash
+cargo install gbk2utf8
+```
+
+If you do not want Cargo at all, use a prebuilt executable:
+
+1. Open GitHub Releases: `https://github.com/GenesisAN/gbk2utf8/releases`
+2. Download the Windows artifact (for example `gbk2utf8-windows-x86_64.exe`)
+3. Optionally rename it to `gbk2utf8.exe`
+4. Run it directly, or add its folder to `PATH` for global usage
 
 1. Install from crates.io (recommended)
 

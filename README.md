@@ -50,7 +50,23 @@ gbk2utf8 -e txt -b
 
 安装后可执行文件位于 `~/.cargo/bin`（Windows 通常是 `%USERPROFILE%\\.cargo\\bin`），请确保该目录在 `PATH` 中。
 
-如果你没有安装 Cargo（不做 Rust 开发也可以安装）：
+推荐按下面 3 条路径选择一种：
+
+1. 通过 Cargo 安装（推荐，大多数用户）
+
+如果你已安装 Cargo，直接执行：
+
+```bash
+cargo install gbk2utf8
+```
+
+升级：
+
+```bash
+cargo install gbk2utf8 --force
+```
+
+如果你还没安装 Cargo（不做 Rust 开发也可以安装）：
 
 1. 访问 `https://rustup.rs` 并安装 Rustup（会同时安装 Cargo）
 2. 重新打开终端，确认 Cargo 可用：
@@ -59,38 +75,27 @@ gbk2utf8 -e txt -b
 cargo --version
 ```
 
-3. 再执行：
-
-```bash
-cargo install gbk2utf8
-```
-
-如果你不想安装 Cargo，可以直接使用预编译 EXE：
+2. 直接使用预编译 EXE（不安装 Cargo）
 
 1. 打开 GitHub Releases：`https://github.com/GenesisAN/gbk2utf8/releases`
 2. 下载 Windows 产物（如 `gbk2utf8-windows-x86_64.exe`）
 3. 重命名为 `gbk2utf8.exe`（可选）
 4. 放到任意目录并执行，或把该目录加入 `PATH` 后全局调用
 
-1. crates.io 安装（推荐）
+3. 开发者安装方式（本地源码 / Git）
 
-```bash
-cargo install gbk2utf8
-cargo install gbk2utf8 --force
-```
-
-2. 本地源码安装（开发者）
+本地源码安装：
 
 ```bash
 cargo install --path .
 cargo install --path . --force
 ```
 
-3. Git 仓库安装（开发者）
+从 Git 仓库安装：
 
 ```bash
-cargo install --git <你的仓库地址> gbk2utf8
-cargo install --git <你的仓库地址> gbk2utf8 --force
+cargo install --git https://github.com/GenesisAN/gbk2utf8.git gbk2utf8
+cargo install --git https://github.com/GenesisAN/gbk2utf8.git gbk2utf8 --force
 ```
 
 卸载：
@@ -247,7 +252,23 @@ gbk2utf8 -e txt -b
 Binary location is usually `~/.cargo/bin` (Windows: `%USERPROFILE%\\.cargo\\bin`).
 Make sure it is in your `PATH`.
 
-If Cargo is not installed (you can do this without writing Rust code):
+Choose one of these 3 paths:
+
+1. Install with Cargo (recommended for most users)
+
+If Cargo is already installed:
+
+```bash
+cargo install gbk2utf8
+```
+
+Upgrade:
+
+```bash
+cargo install gbk2utf8 --force
+```
+
+If Cargo is not installed yet (no Rust development needed):
 
 1. Install Rustup from `https://rustup.rs` (it also installs Cargo)
 2. Reopen your terminal and verify:
@@ -256,38 +277,27 @@ If Cargo is not installed (you can do this without writing Rust code):
 cargo --version
 ```
 
-3. Then install this tool:
-
-```bash
-cargo install gbk2utf8
-```
-
-If you do not want Cargo at all, use a prebuilt executable:
+2. Use prebuilt executable (without Cargo)
 
 1. Open GitHub Releases: `https://github.com/GenesisAN/gbk2utf8/releases`
 2. Download the Windows artifact (for example `gbk2utf8-windows-x86_64.exe`)
 3. Optionally rename it to `gbk2utf8.exe`
 4. Run it directly, or add its folder to `PATH` for global usage
 
-1. Install from crates.io (recommended)
+3. Developer install (local source / Git)
 
-```bash
-cargo install gbk2utf8
-cargo install gbk2utf8 --force
-```
-
-2. Install from local source (for development)
+Install from local source:
 
 ```bash
 cargo install --path .
 cargo install --path . --force
 ```
 
-3. Install from Git repo (for development)
+Install from Git repository:
 
 ```bash
-cargo install --git <your-repo-url> gbk2utf8
-cargo install --git <your-repo-url> gbk2utf8 --force
+cargo install --git https://github.com/GenesisAN/gbk2utf8.git gbk2utf8
+cargo install --git https://github.com/GenesisAN/gbk2utf8.git gbk2utf8 --force
 ```
 
 Uninstall:

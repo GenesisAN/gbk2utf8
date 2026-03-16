@@ -2,7 +2,7 @@ use encoding::all::GBK;
 use encoding::{EncoderTrap, Encoding};
 use gbk2utf8::{
     build_ignore_matcher, convert_gbk_file, handle_file, process_files_in_dir, run,
-    scan_gbk_file, should_ignore, Config, FileProcessOutcome, ProcessingStats,
+    scan_gbk_file, should_ignore, Config, FileProcessOutcome, LangOption, ProcessingStats,
 };
 use std::collections::HashMap;
 use std::fs;
@@ -20,6 +20,7 @@ fn make_config(dir: &Path) -> Config {
         min_confidence: 0.8,
         tld: Some("cn".to_string()),
         ignore_file: ".gbk2utf8ignore".to_string(),
+        lang: LangOption::Auto,
     }
 }
 

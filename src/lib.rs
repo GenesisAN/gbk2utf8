@@ -1,9 +1,10 @@
 use chardetng::EncodingDetector;
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use encoding::all::GBK;
 use encoding::{DecoderTrap, Encoding};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use std::collections::HashMap;
+use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
@@ -28,7 +29,7 @@ pub struct Config {
         short = 'e',
         long = "extensions",
         value_delimiter = ',',
-        default_value = "c,h,txt",
+        default_value = "txt,c,h",
         help = "要处理的文件扩展名（多个用英文逗号分隔）"
     )]
     pub extensions: Vec<String>,
@@ -50,6 +51,59 @@ pub struct Config {
         help = "忽略规则文件路径（gitignore 语法），相对路径基于 --dir"
     )]
     pub ignore_file: String,
+
+    #[arg(
+        long = "lang",
+        value_enum,
+        default_value = "auto",
+        help = "输出语言：auto/zh/en（默认 auto）"
+    )]
+    pub lang: LangOption,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+pub enum LangOption {
+    Auto,
+    Zh,
+    En,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum UiLang {
+    Zh,
+    En,
+}
+
+impl Config {
+    pub fn ui_lang(&self) -> UiLang {
+        match self.lang {
+            LangOption::Zh => UiLang::Zh,
+            LangOption::En => UiLang::En,
+            LangOption::Auto => detect_ui_lang(),
+        }
+    }
+}
+
+fn detect_ui_lang() -> UiLang {
+    let locale = ["LC_ALL", "LC_MESSAGES", "LANGUAGE", "LANG"]
+        .iter()
+        .filter_map(|key| env::var(key).ok())
+        .find(|value| !value.trim().is_empty())
+        .unwrap_or_default()
+        .to_lowercase();
+
+    if locale.contains("zh") {
+        UiLang::Zh
+    } else {
+        UiLang::En
+    }
+}
+
+fn tr(config: &Config, zh: &'static str, en: &'static str) -> &'static str {
+    match config.ui_lang() {
+        UiLang::Zh => zh,
+        UiLang::En => en,
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -120,7 +174,7 @@ pub fn convert_gbk_file(file_path: &Path, config: &Config) -> io::Result<Option<
             file.write_all(decoded.as_bytes())?;
             Ok(backup_path)
         }
-        Err(_) => Err(io::Error::new(io::ErrorKind::InvalidData, "GBK 解码失败")),
+        Err(_) => Err(io::Error::new(io::ErrorKind::InvalidData, "GBK decode failed")),
     }
 }
 
@@ -131,15 +185,24 @@ pub fn handle_file(file_path: &Path, config: &Config) -> io::Result<FileProcessO
             let show_detail = |prefix: &str, msg: &str| {
                 if config.show_info {
                     println!(
-                        "{} {}: 编码 = {}, 置信度 = {:.2}{}",
+                        "{} {}: {} = {}, {} = {:.2}{}",
                         prefix,
                         file_path.display(),
+                        tr(config, "编码", "encoding"),
                         encoding_name,
+                        tr(config, "置信度", "confidence"),
                         confidence,
                         msg
                     );
                 } else {
-                    println!("{} {}: 编码 = {}{}", prefix, file_path.display(), encoding_name, msg);
+                    println!(
+                        "{} {}: {} = {}{}",
+                        prefix,
+                        file_path.display(),
+                        tr(config, "编码", "encoding"),
+                        encoding_name,
+                        msg
+                    );
                 }
             };
 
@@ -150,28 +213,43 @@ pub fn handle_file(file_path: &Path, config: &Config) -> io::Result<FileProcessO
                 }
                 "gbk" => {
                     if config.scan_only {
-                        show_detail("⏩", "，未转换（扫描模式）");
+                        show_detail(
+                            "⏩",
+                            tr(config, "，未转换（扫描模式）", " (not converted, scan-only mode)"),
+                        );
                         return Ok(FileProcessOutcome::NoConversion);
                     } else {
                         match convert_gbk_file(file_path, config) {
                             Ok(Some(bak)) if config.show_info => {
-                                println!("📦 备份创建：{}", bak.display());
+                                println!(
+                                    "📦 {}: {}",
+                                    tr(config, "备份创建", "backup created"),
+                                    bak.display()
+                                );
                             }
                             Ok(_) => {}
                             Err(e) => return Err(e),
                         }
-                        show_detail("🔄", "，已转换为 UTF-8");
+                        show_detail("🔄", tr(config, "，已转换为 UTF-8", " (converted to UTF-8)"));
                         return Ok(FileProcessOutcome::Converted);
                     }
                 }
                 _ => {
-                    show_detail("❌", "，跳过");
+                    show_detail("❌", tr(config, "，跳过", " (skipped)"));
                     return Ok(FileProcessOutcome::NoConversion);
                 }
             }
         }
         None => {
-            println!("⚠️ {}: 编码不确定或置信度不足，跳过", file_path.display());
+            println!(
+                "⚠️ {}: {}",
+                file_path.display(),
+                tr(
+                    config,
+                    "编码不确定或置信度不足，跳过",
+                    "uncertain encoding or low confidence, skipped"
+                )
+            );
             return Ok(FileProcessOutcome::NoConversion);
         }
     }
@@ -185,7 +263,11 @@ pub fn build_ignore_matcher(root_dir: &Path, config: &Config) -> io::Result<Giti
         if let Some(e) = builder.add(&absolute_ignore_file) {
             return Err(io::Error::new(io::ErrorKind::InvalidInput, e.to_string()));
         }
-        println!("🚫 忽略规则文件：{}", absolute_ignore_file.display());
+        println!(
+            "🚫 {}: {}",
+            tr(config, "忽略规则文件", "ignore rules file"),
+            absolute_ignore_file.display()
+        );
     }
 
     builder
@@ -227,7 +309,11 @@ pub fn process_files_in_dir(
 
         if should_ignore(relative_path, path.is_dir(), ignore_matcher) {
             if config.show_info {
-                println!("🚫 {}: 命中忽略规则，跳过", path.display());
+                println!(
+                    "🚫 {}: {}",
+                    path.display(),
+                    tr(config, "命中忽略规则，跳过", "matched ignore rules, skipped")
+                );
             }
             continue;
         }

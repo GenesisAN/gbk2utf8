@@ -1,6 +1,6 @@
 [package]
 name = "gbk2utf8"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 build = "build.rs"
 description = "CLI tool to detect and convert GBK-encoded source files to UTF-8 safely"
